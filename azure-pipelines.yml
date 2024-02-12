@@ -25,6 +25,5 @@ steps:
     azureSubscriptionConnection: 'az-devops-sp-vishwa'
     azureResourceGroup: 'aks-vishwa'
     kubernetesCluster: 'myAKSCluster'
-    strategy: 'canary'
     percentage: '0'
     manifests: 'deploy-prod.yml'
