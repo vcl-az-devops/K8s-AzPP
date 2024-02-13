@@ -73,7 +73,7 @@ stages:
         backendAzureRmResourceGroupName: 'rg01'
         backendAzureRmStorageAccountName: cts2024devopsvishwa
         backendAzureRmContainerName: teamcontainer
-        backendAzureRmKey: vishwa-uat.tfstate
+        backendAzureRmKey: vishwa-uat-01.tfstate
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: validate
       inputs:
@@ -97,7 +97,7 @@ stages:
         backendAzureRmResourceGroupName: 'rg01'
         backendAzureRmStorageAccountName: cts2024devopsvishwa
         backendAzureRmContainerName: teamcontainer
-        backendAzureRmKey: vishwa-uat.tfstate
+        backendAzureRmKey: vishwa-uat-01.tfstate
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Plan
       inputs:
@@ -172,6 +172,6 @@ stages:
         azureResourceGroup: 'aks-vishwa'
         kubernetesCluster: 'myAKSCluster'
         manifests: |
-          $(Pipeline.Workspace)/manifests/deploy-prod.yaml
-          $(Pipeline.Workspace)/manifests/service.yaml
+          $(Pipeline.Workspace)/s/manifests/deploy-prod.yaml
+          $(Pipeline.Workspace)/s/manifests/service.yaml
         imagePullSecrets: 'acr-secret'
