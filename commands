@@ -26,3 +26,6 @@ strategy: 'canary'
   - job: DeployToAks
     displayName: DeployToAks
     steps:
+
+
+arguments: '-var="client_id=e0051092-9c36-465b-97ec-71f173494a02"  -var="client_secret=64j8Q~wLo0CwQakUD5xYBKLI.C6g1GOxUBAT3ccM"

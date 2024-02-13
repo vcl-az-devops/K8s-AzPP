@@ -11,7 +11,12 @@ parameters:
   type: string 
   default: 'Azure Pipelines'
 
+- name: client_id
+  type: string 
+  default: 'e0051092-9c36-465b-97ec-71f173494a02'
 
+- name: client_secret
+  type: string 
 
 resources:
 - repo: self
@@ -80,6 +85,7 @@ stages:
   jobs:
   - job: Plan_Terraform 
     displayName: Agent job 4
+    timeoutInMinutes: 5
     pool:
       #name: Azure Pipelines
       name: ${{ parameters.poolname }}    
@@ -97,11 +103,16 @@ stages:
       inputs:
         command: plan
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
+        arguments: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
+
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Apply Or Destroy
       inputs:
         command: ${{ parameters.createdestroy }}
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
+        arguments: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}" "'
+      workingDirectory: $(Build.SourcesDirectory)
+
 
 - stage: Build_Image
   dependsOn: Apply_Terraform
