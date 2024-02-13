@@ -103,14 +103,14 @@ stages:
       inputs:
         command: plan
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
-        arguments: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
+        ommandOptions: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
 
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Apply Or Destroy
       inputs:
         command: ${{ parameters.createdestroy }}
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
-        arguments: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
+        ommandOptions: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
         workingDirectory: $(Build.SourcesDirectory)
 
 
@@ -135,7 +135,7 @@ stages:
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/kbs-manifest'
-        artifact: 'mnifests'
+        artifact: 'manifests'
         publishLocation: 'pipeline'
 
 
