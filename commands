@@ -29,3 +29,33 @@ strategy: 'canary'
 
 
 arguments: '-var="client_id=e0051092-9c36-465b-97ec-71f173494a02"  -var="client_secret=64j8Q~wLo0CwQakUD5xYBKLI.C6g1GOxUBAT3ccM"
+
+
+
+- stage: Deploy
+  dependsOn: Build_Image
+  jobs:
+  - job: Build_Image
+    displayName: Build_Image
+    pool:
+      #name: Azure Pipelines
+      name: ${{ parameters.poolname }}   
+    steps:
+
+
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'manifests'
+        targetPath: '$(Pipeline.Workspace)/manifests'
+    - task: KubernetesManifest@1
+      inputs:
+        action: 'deploy'
+        connectionType: 'azureResourceManager'
+        azureSubscriptionConnection: 'az-devops-sp-vishwa'
+        azureResourceGroup: 'aks-vishwa'
+        kubernetesCluster: 'myAKSCluster'
+        manifests: |
+          $(Pipeline.Workspace)/manifests/deploy-prod.yaml
+          $(Pipeline.Workspace)/manifests/service.yaml
+        imagePullSecrets: 'acr'

@@ -85,7 +85,7 @@ stages:
   jobs:
   - job: Plan_Terraform 
     displayName: Agent job 4
-    timeoutInMinutes: 5
+    #timeoutInMinutes: 5
     pool:
       #name: Azure Pipelines
       name: ${{ parameters.poolname }}    
