@@ -172,6 +172,6 @@ stages:
         azureResourceGroup: 'aks-vishwa'
         kubernetesCluster: 'myAKSCluster'
         manifests: |
-          $(Pipeline.Workspace)/s/manifests/deploy-prod.yaml
-          $(Pipeline.Workspace)/s/manifests/service.yaml
+          $(Pipeline.Workspace)/s/manifests/deploy-prod.yml
+          $(Pipeline.Workspace)/s/manifests/service.yml
         imagePullSecrets: 'acr-secret'
