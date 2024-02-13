@@ -126,7 +126,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'acr-login'
-        repository: '${imageRepo)'
+        repository: ${imageRepo)
         command: 'buildAndPush'
         Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
         tags: |

@@ -41,7 +41,16 @@ arguments: '-var="client_id=e0051092-9c36-465b-97ec-71f173494a02"  -var="client_
       #name: Azure Pipelines
       name: ${{ parameters.poolname }}   
     steps:
-
+    - task: KubernetesManifest@1
+      inputs:
+        action: 'createSecret'
+        connectionType: 'azureResourceManager'
+        azureSubscriptionConnection: 'az-devops-sp-vishwa'
+        azureResourceGroup: 'aks-vishwa'
+        kubernetesCluster: 'myAKSCluster'
+        secretType: 'dockerRegistry'
+        secretName: 'acr-secret'
+        dockerRegistryEndpoint: 'acr-login'
 
     - task: DownloadPipelineArtifact@2
       inputs:
