@@ -110,8 +110,8 @@ stages:
       inputs:
         command: ${{ parameters.createdestroy }}
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
-        arguments: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}" "'
-      workingDirectory: $(Build.SourcesDirectory)
+        arguments: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
+        workingDirectory: $(Build.SourcesDirectory)
 
 
 - stage: Build_Image
