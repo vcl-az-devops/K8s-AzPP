@@ -103,14 +103,14 @@ stages:
       inputs:
         command: plan
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
-        ommandOptions: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
+        commandOptions: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
 
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Apply Or Destroy
       inputs:
         command: ${{ parameters.createdestroy }}
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
-        ommandOptions: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
+        commandOptions: '-var="client_id=${{ client_id }}"  -var="client_secret=${{ client_secret }}"'
         workingDirectory: $(Build.SourcesDirectory)
 
 
