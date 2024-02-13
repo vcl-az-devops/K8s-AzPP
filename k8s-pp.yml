@@ -3,13 +3,13 @@ trigger:
   - UAT
 pool:
   #name: Azure Pipelines
-  name: $(poolname)
+  name: ${{ parameters.poolname }}
 
 resources:
 - repo: self
 
 variables:
-  poolname: 'UAT'
+  #poolname: 'Azure Pipelines'
   imageRepo: 'k8sapp'
   tag: 'v1'
 
@@ -17,6 +17,10 @@ parameters:
 - name: createdestroy
   type: string 
   default: 'apply'
+- name: poolname
+  type: string 
+  default: 'Azure Pipelines'
+
 
 stages:
 - stage: INstall_Terraform  
