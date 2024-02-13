@@ -1,6 +1,16 @@
 name: Install Terraform on agent
 trigger:
   - UAT
+
+parameters:
+- name: createdestroy
+  type: string 
+  default: 'apply'
+
+- name: poolname
+  type: string 
+  default: 'Azure Pipelines'
+
 pool:
   #name: Azure Pipelines
   name: ${{ parameters.poolname }}
@@ -12,15 +22,6 @@ variables:
   #poolname: 'Azure Pipelines'
   imageRepo: 'k8sapp'
   tag: 'v1'
-
-parameters:
-- name: createdestroy
-  type: string 
-  default: 'apply'
-- name: poolname
-  type: string 
-  default: 'Azure Pipelines'
-
 
 stages:
 - stage: INstall_Terraform  
