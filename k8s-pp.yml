@@ -11,11 +11,11 @@ parameters:
   type: string 
   default: 'Azure Pipelines'
 
-- name: client_id
+- name: clients_id
   type: string 
   default: 'e0051092-9c36-465b-97ec-71f173494a02'
 
-- name: client_secret
+- name: clients_secret
   type: string 
 
 resources:
@@ -102,14 +102,14 @@ stages:
       displayName: Plan
       inputs:
         command: plan
-        commandOptions: '-var client_id=${{ client_id }}  -var client_secret=${{ client_secret }}'
+        commandOptions: '-var client_id=${{ parameters.clients_id }}  -var client_secret=${{ parameters.clients_secret }}'
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
 
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Apply Or Destroy
       inputs:
         command: ${{ parameters.createdestroy }}
-        commandOptions: '-var client_id=${{ client_id }}  -var client_secret=${{ client_secret }}'
+        commandOptions: '-var client_id=${{ clients_id }}  -var client_secret=${{ clients_secret }}'
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
         workingDirectory: $(Build.SourcesDirectory)
 
