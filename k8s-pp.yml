@@ -109,7 +109,7 @@ stages:
       displayName: Apply Or Destroy
       inputs:
         command: ${{ parameters.createdestroy }}
-        commandOptions: '-var client_id=${{ clients_id }}  -var client_secret=${{ clients_secret }}'
+        commandOptions: '-var client_id=${{ parameters.clients_id }}  -var client_secret=${{ parameters.clients_secret }}'
         environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
         workingDirectory: $(Build.SourcesDirectory)
 
