@@ -1,0 +1,118 @@
+name: Install Terraform on agent
+trigger:
+  - UAT
+pool:
+  #name: Azure Pipelines
+  name: $(poolname)
+
+resources:
+- repo: self
+
+variables:
+  poolname: 'UAT'
+  imageRepo: 'k8sapp'
+  tag: 'v1'
+
+parameters:
+- name: createdestroy
+  type: string 
+  default: 'apply'
+
+stages:
+- stage: INstall_Terraform  
+  jobs:
+  - job: INstall_Terraform 
+    displayName: Agent job 1
+    steps:
+    - script: |
+        if command -v terraform &> /dev/null; then
+          echo "Terraform is installed"
+        else
+          sudo apt update -y
+          sudo apt install unzip -y 
+          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common -y
+          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update -y
+          sudo apt-get install terraform -y
+        fi
+      displayName: 'Command Line Script'
+    - script: |
+        if command -v docker-compose &> /dev/null; then
+          echo "docker-compose is installed"
+        else
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+        fi
+      displayName: 'Command Line Script'
+
+- stage: Validate_Terraform
+  jobs:
+  - job: Validate_Terraform
+    displayName: Agent job 3
+    dependsOn: INstall_Terraform
+    steps:
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
+      displayName: Init
+      inputs:
+        backendServiceArm: 'az-devops-sp-vishwa'
+        backendAzureRmResourceGroupName: 'rg01'
+        backendAzureRmStorageAccountName: cts2024devopsvishwa
+        backendAzureRmContainerName: teamcontainer
+        backendAzureRmKey: vishwa-uat.tfstate
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
+      displayName: validate
+      inputs:
+        command: validate
+        environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
+
+- stage: Apply_Terraform
+  dependsOn: Validate_Terraform
+  jobs:
+  - job: Plan_Terraform 
+    displayName: Agent job 4
+    
+    steps:
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
+      displayName: Init
+      inputs:
+        backendServiceArm: 'az-devops-sp-vishwa'
+        backendAzureRmResourceGroupName: 'rg01'
+        backendAzureRmStorageAccountName: cts2024devopsvishwa
+        backendAzureRmContainerName: teamcontainer
+        backendAzureRmKey: vishwa-uat.tfstate
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
+      displayName: Plan
+      inputs:
+        command: plan
+        environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
+      displayName: Apply Or Destroy
+      inputs:
+        command: ${{ parameters.createdestroy }}
+        environmentServiceNameAzureRM: 'az-devops-sp-vishwa'
+
+- stage: Build_Image
+  dependsOn: Apply_Terraform
+  jobs:
+  - job: Build_Image
+    displayName: Build_Image
+    
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'acr-login'
+        repository: '${imageRepo)'
+        command: 'buildAndPush'
+        Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          $(tag)
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)/s/kbs-manifest'
+        artifact: 'mnifests'
+        publishLocation: 'pipeline'
+
+

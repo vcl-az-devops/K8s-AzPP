@@ -4,3 +4,25 @@
     command: 'apply'
     commandOptions: '-auto-approve -var "client_id=$(client_id)" -var "client_secret=$(client_secret)"'
     workingDirectory: '$(System.DefaultWorkingDirectory)/path/to/your/terraform/configuration'
+
+
+terraform plan -var client_id="e0051092-9c36-465b-97ec-71f173494a02" -var client_secret="64j8Q~wLo0CwQakUD5xYBKLI.C6g1GOxUBAT3ccM"
+
+strategy: 'canary'
+
+- task: Kubernetes@1
+  displayName: 'Deploy to Kubernetes cluster'
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: '<your_kubernetes_service_connection>'
+    namespace: '<your_namespace>'
+    command: 'apply'
+    arguments: '-f path/to/first_manifest.yaml,path/to/second_manifest.yaml'
+
+
+- stage: Deploy_to_AKS
+  dependsOn: Build_Image
+  jobs:
+  - job: DeployToAks
+    displayName: DeployToAks
+    steps:
