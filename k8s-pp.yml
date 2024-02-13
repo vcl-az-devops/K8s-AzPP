@@ -11,9 +11,7 @@ parameters:
   type: string 
   default: 'Azure Pipelines'
 
-pool:
-  #name: Azure Pipelines
-  name: ${{ parameters.poolname }}
+
 
 resources:
 - repo: self
@@ -28,6 +26,9 @@ stages:
   jobs:
   - job: INstall_Terraform 
     displayName: Agent job 1
+    pool:
+      #name: Azure Pipelines
+      name: ${{ parameters.poolname }}
     steps:
     - script: |
         if command -v terraform &> /dev/null; then
@@ -56,7 +57,9 @@ stages:
   jobs:
   - job: Validate_Terraform
     displayName: Agent job 3
-    
+    pool:
+      #name: Azure Pipelines
+      name: ${{ parameters.poolname }}
     steps:
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Init
@@ -77,7 +80,9 @@ stages:
   jobs:
   - job: Plan_Terraform 
     displayName: Agent job 4
-    
+    pool:
+      #name: Azure Pipelines
+      name: ${{ parameters.poolname }}    
     steps:
     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV4@4
       displayName: Init
@@ -103,7 +108,9 @@ stages:
   jobs:
   - job: Build_Image
     displayName: Build_Image
-    
+    pool:
+      #name: Azure Pipelines
+      name: ${{ parameters.poolname }}   
     steps:
     - task: Docker@2
       inputs:
